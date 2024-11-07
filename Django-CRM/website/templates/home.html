@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-md-6 offset-md-3">
+    <h1>Records</h1>
+    <form method="get" action="{% url 'home' %}">
+        <div class="mb-3">
+            <label for="state">State:</label>
+            <input type="text" class="form-control" id="state" name="state" value="{{ request.GET.state }}">
+        </div>
+        <div class="mb-3">
+            <label for="city">City:</label>
+            <input type="text" class="form-control" id="city" name="city" value="{{ request.GET.city }}">
+        </div>
+        <div class="mb-3">
+            <label for="name_start_end">Name Starts with A and Ends with e:</label>
+            <input type="checkbox" id="name_start_end" name="name_start_end" {% if request.GET.name_start_end %}checked{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="name_contains">Name Contains "ma":</label>
+            <input type="checkbox" id="name_contains" name="name_contains" {% if request.GET.name_contains %}checked{% endif %}>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Address</th>
+                <th scope="col">City</th>
+                <th scope="col">State</th>
+                <th scope="col">Zipcode</th>
+                <th scope="col">Created At</th>
+                <th scope="col">ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+                <tr>
+                    <td>{{ record.first_name }} {{ record.last_name }}</td>
+                    <td>{{ record.email }}</td>
+                    <td>{{ record.phone }}</td>
+                    <td>{{ record.address }}</td>
+                    <td>{{ record.city }}</td>
+                    <td>{{ record.state }}</td>
+                    <td>{{ record.zipcode }}</td>
+                    <td>{{ record.created_at }}</td>
+                    <td><a href="{% url 'record' record.id %}">{{ record.id }}</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const filters = document.querySelectorAll('input[type="text"], input[type="checkbox"]');
+      
+      filters.forEach(filter => {
+          filter.addEventListener('change', () => {
+              filters.forEach(otherFilter => {
+                  if (otherFilter !== filter && otherFilter.type === 'text') {
+                      otherFilter.value = '';
+                  } else if (otherFilter !== filter && otherFilter.type === 'checkbox') {
+                      otherFilter.checked = false;
+                  }
+              });
+          });
+      });
+  });
+</script>
+
+{% endblock %}
